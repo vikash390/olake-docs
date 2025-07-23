@@ -99,7 +99,6 @@ This guide helps you set up and use Project Nessie as an Iceberg REST catalog wi
 1. Save the following as `docker-compose.yml`:
 
 ```yaml
-version: "3.8"
 
 services:
   nessie:
@@ -128,7 +127,7 @@ services:
       mc:
         condition: service_completed_successfully
     networks:
-      - app-network
+      - nessie-network
 
   minio:
     image: quay.io/minio/minio:RELEASE.2025-07-18T21-56-31Z
@@ -145,7 +144,7 @@ services:
       - minio-data:/data
     command: server /data
     networks:
-      - app-network
+      - nessie-network
     healthcheck:
       test: ["CMD-SHELL", "curl -f http://localhost:9000/minio/health/live || exit 1"]
       interval: 5s
@@ -164,7 +163,7 @@ services:
       -c "mc alias set myminio http://minio:9000/ minio minio123 && 
            mc mb myminio/warehouse --ignore-existing"
     networks:
-      - app-network
+      - nessie-network
 
   postgres:
     image: postgres:15
@@ -178,7 +177,7 @@ services:
     volumes:
       - postgres-data:/data
     networks:
-      - app-network
+      - nessie-network
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U nessie"]
       interval: 5s
@@ -190,18 +189,15 @@ volumes:
   postgres-data:
 
 networks:
-  app-network:
+  nessie-network:
     driver: bridge
 ```
 
 2. Start the services:
 
 ```bash
-docker-compose up --build
+docker-compose up -d
 ```
-
-#### Bucket Initialization
-The `mc` (MinIO client) service automatically sets up the warehouse bucket when the container starts. You should see logs confirming that the bucket exists or has been created.
 
 #### Nessie Catalog Configuration in OLake
 To make OLake use Nessie as the catalog, you'll need to point OLake to the REST endpoint provided by Nessie (`http://localhost:19120/iceberg/`), and configure it to write data to MinIO under the warehouse bucket.
