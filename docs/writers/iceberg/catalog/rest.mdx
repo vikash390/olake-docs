@@ -96,7 +96,7 @@ Coming soon!
 This guide helps you set up and use Project Nessie as an Iceberg REST catalog with OLake. It uses Docker Compose to spin up Nessie, MinIO (S3-compatible object store), and Postgres (for Nessie metadata storage).
 
 ## Assumption: 
-All services involved in the sync process — including the OLake source image, Nessie, MinIO, and any other dependencies — must be part of the same Docker network. Use container names (e.g., http://nessie:19120, http://minio:9000) for inter-service communication instead of localhost .
+All services involved in the sync process — including the OLake source image, Nessie, MinIO, and any other dependencies — must be part of the same Docker network.
 
 ####  Setup Steps:
 1. Save the following as `docker-compose.yml`:
